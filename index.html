@@ -74,10 +74,11 @@
     </div>
   </div>
 
-  <!-- Load secret API key from separate file -->
-  <script src="secrets.js"></script>
-
+  <script src="secrets.js"></script> <!-- This is the file where your API key is stored locally -->
   <script>
+    // Fetch the API key from the secrets.js file
+    const apiKey = window.apiKey; // Assuming secrets.js assigns it to window.apiKey
+    
     const weatherForm = document.getElementById('weatherForm');
     const cityInput = document.getElementById('city');
     const result = document.getElementById('weatherResult');
@@ -114,7 +115,7 @@
     geoBtn.addEventListener('click', () => {
       navigator.geolocation.getCurrentPosition(pos => {
         const { latitude, longitude } = pos.coords;
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`)
           .then(res => res.json())
           .then(data => {
             cityInput.value = data.name;
@@ -124,15 +125,10 @@
     });
 
     function fetchWeather(city) {
-      if (!window.OPEN_WEATHER_API_KEY) {
-        result.innerHTML = `<p class="text-danger">Missing API key.</p>`;
-        return;
-      }
-
       const units = isFahrenheit ? 'imperial' : 'metric';
       const unitSymbol = isFahrenheit ? '°F' : '°C';
 
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=${units}`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`)
         .then(res => res.json())
         .then(data => {
           if (data.cod !== 200) {
@@ -152,7 +148,7 @@
             <p>Humidity: ${humidity}%</p>
           `;
 
-          fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OPEN_WEATHER_API_KEY}&units=${units}`)
+          fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=${units}`)
             .then(res => res.json())
             .then(forecastData => {
               forecast.innerHTML = '';
